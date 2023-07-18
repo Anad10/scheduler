@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="#ffffff"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ჩამტარებელი"
+            android:textColor="@color/main"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="შეხვედრის სახელი"
+            android:textColor="@color/dark"
+            android:textSize="18dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="A"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:background="@drawable/ic_baseline_circle_24"
+                android:textAlignment="center"
+                android:paddingTop="5dp"
+                android:textColor="@color/secondary"/>
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="B"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:background="@drawable/ic_baseline_circle_24"
+                android:textAlignment="center"
+                android:paddingTop="5dp"
+                android:textColor="@color/secondary"
+                android:layout_marginLeft="-13dp"/>
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="C"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:background="@drawable/ic_baseline_circle_24"
+                android:textAlignment="center"
+                android:paddingTop="5dp"
+                android:textColor="@color/secondary"
+                android:layout_marginLeft="-13dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="10dp"
+                android:text="+3 დამსწრები"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

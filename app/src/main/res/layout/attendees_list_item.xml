@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/att_img"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/ic_baseline_circle_24"/>
+
+        <TextView
+            android:id="@+id/att_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student 1"
+            android:layout_marginTop="20dp"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/att_active"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:background="@drawable/ic_active"
+        android:layout_marginTop="5dp"/>
+
+</LinearLayout>
