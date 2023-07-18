@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'edu.iliauni.tabs'
+    namespace 'edu.iliauni.scheduler'
     compileSdk 33
 
     defaultConfig {
-        applicationId "edu.iliauni.tabs"
+        applicationId "edu.iliauni.scheduler"
         minSdk 21
         targetSdk 33
         versionCode 1

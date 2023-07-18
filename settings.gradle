@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Tabs"
+rootProject.name = "Scheduler"
 include ':app'
