@@ -1,15 +1,32 @@
 package edu.iliauni.scheduler
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import edu.iliauni.scheduler.API.ApiService
+import edu.iliauni.scheduler.API.Certificate
+import edu.iliauni.scheduler.Manager.RealmManager
+import edu.iliauni.scheduler.objects.Attendee
+import edu.iliauni.scheduler.objects.Event
+import edu.iliauni.scheduler.objects.Host
+import edu.iliauni.scheduler.objects.UserDetail
+import io.realm.kotlin.ext.query
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
+import org.json.JSONArray
+import retrofit2.Retrofit
 
 class LoginActivity : AppCompatActivity() {
     companion object{
@@ -61,17 +78,93 @@ class LoginActivity : AppCompatActivity() {
             println("ID Token: $idToken")
 
             // Proceed with sending the ID token to your backend
-            sendIdTokenToBackend("idToken")
+            val userId = getUserID(idToken)
+            RealmManager.realm.writeBlocking {
+                // get UserDetails from Realm
+                val userDetail = this.query<UserDetail>().first()
+                userDetail.find()?.userName = email.toString()
+                userDetail.find()?.userId = userId
+            }
+            GlobalScope.launch(Dispatchers.IO) {
+                try{
+                    val responseString = getEvents(userId).string()
+                    createDB(responseString)
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                }
+                catch (exception: Exception){
+                    Log.e("exception",exception.toString())
+                }
+            }
         } catch (e: ApiException) {
             // Sign in failed, handle the error
             println("Sign in failed: ${e.message}")
         }
     }
 
-    private fun sendIdTokenToBackend(idToken: String?) {
+    private fun getUserID(idToken: String?): Int{
         // Perform API request to send the ID token
-        //temporary redirect to ChooseProgramActivity
-        val intent = Intent(this, ChooseProgramActivity::class.java)
-        startActivity(intent)
+        return 1;
+        TODO()
     }
+
+    fun createDB(responseString: String){
+        val response = JSONArray(responseString)
+        for (i in 0 until response.length()) {
+            val jsonObject = response.getJSONObject(i)
+            val event = Event().apply {
+                id = jsonObject.getString("id").toLong()
+                name = jsonObject.getString("name")
+                description = jsonObject.getString("description")
+                val events = jsonObject.getJSONArray("events")
+                for (j in 0 until events.length()) {
+                    val event = events.getJSONObject(j)
+                    startDates?.add(event.getString("startDate"))
+                    endDates?.add(event.getString("endDate"))
+                }
+
+                val users = events.getJSONObject(0).getJSONArray("attendances")
+                val participants = users.getJSONObject(0).getJSONArray("users")
+                host = Host().apply {
+                    id = 1
+                    firstName = "Shota"
+                    lastName = "Tsiskaridze"
+                }
+                for (j in 0 until participants.length()) {
+                    val participant = participants.getJSONObject(j)
+                    val attendee = Attendee().apply {
+                        id = participant.getLong("id")
+                        firstName = participant.getString("firstName")
+                        lastName = participant.getString("lastName")
+                        online = false
+                    }
+                    attendees?.add(attendee)
+                }
+            }
+            RealmManager.realm.writeBlocking {
+                copyToRealm(event)
+            }
+
+        }
+    }
+
+    suspend fun getEvents(userId: Int): ResponseBody {
+        var url = "https://134.122.90.22:7237/"
+        RealmManager.realm.writeBlocking {
+            // get UserDetails from Realm
+            val userDetail = this.query<UserDetail>().first()
+            Log.d("userDetail", userDetail.find()?.userId.toString() + " " + userDetail.find()?.programUrl.toString())
+            //var url = userDetail.find()?.programUrl.toString()
+        }
+        val retrofit = Retrofit.Builder()
+            .baseUrl(url)
+            .client(Certificate().GetClient())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+        return apiService.getEvents(userId)
+
+    }
+
+
 }
