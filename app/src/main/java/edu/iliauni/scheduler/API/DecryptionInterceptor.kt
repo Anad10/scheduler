@@ -13,8 +13,7 @@ class DecryptionInterceptor(private val rsaPublicKey: PublicKey) : okhttp3.Inter
 
         val response = chain.proceed(encryptedRequest)
 
-        // Decrypt the response here using the rsaPublicKey
-        // For example, you can read the response body as a byte array and then decrypt it with the RSA public key
+        // Decrypt the response here using the rsaPublicKey if needed
 
         return response
     }

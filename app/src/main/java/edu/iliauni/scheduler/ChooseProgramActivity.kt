@@ -9,6 +9,7 @@ import android.widget.EditText
 import edu.iliauni.scheduler.API.ApiService
 import edu.iliauni.scheduler.API.Certificate
 import edu.iliauni.scheduler.Manager.RealmManager
+import edu.iliauni.scheduler.config.Constants.Companion.MAIN_SERVER
 import edu.iliauni.scheduler.objects.UserDetail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,10 +18,6 @@ import okhttp3.ResponseBody
 import retrofit2.Retrofit
 
 class ChooseProgramActivity : AppCompatActivity() {
-    companion object{
-        private const val BASE_URL = "https://134.122.90.22:7137/"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_program)
@@ -63,12 +60,11 @@ class ChooseProgramActivity : AppCompatActivity() {
 
     suspend fun getProgramUrl(code: String): ResponseBody {
        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(MAIN_SERVER)
             .client(Certificate().GetClient())
             .build()
 
         val apiService = retrofit.create(ApiService::class.java)
         return apiService.getProgramUrl(code)
-
     }
 }

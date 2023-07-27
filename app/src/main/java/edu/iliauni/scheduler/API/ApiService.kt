@@ -1,7 +1,10 @@
 package edu.iliauni.scheduler.API
 
+import edu.iliauni.scheduler.objects.Program
 import okhttp3.ResponseBody
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
@@ -10,4 +13,7 @@ interface ApiService {
 
     @GET("Program/Url/{code}")
     suspend fun getProgramUrl(@Path("code") code: String): ResponseBody
+
+    @POST("Program/Create")
+    suspend fun createProgram(@Body program: Program): ResponseBody
 }

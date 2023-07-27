@@ -3,7 +3,9 @@ package edu.iliauni.scheduler
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
@@ -19,6 +21,7 @@ import edu.iliauni.scheduler.ui.main.SectionsPagerAdapter
 import edu.iliauni.scheduler.ui.main.fragments.CalendarFragment
 import edu.iliauni.scheduler.ui.main.fragments.StatisticsFragment
 import edu.iliauni.scheduler.ui.main.fragments.TimelineFragment
+import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -46,7 +49,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         RealmManager.realm.writeBlocking {
             // get UserDetails from Realm
             val userDetail = this.query<UserDetail>().find()
