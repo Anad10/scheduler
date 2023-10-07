@@ -1,7 +1,11 @@
 package edu.iliauni.scheduler.API
 
+import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import edu.iliauni.scheduler.LoginActivity
 import okhttp3.OkHttpClient
 import java.math.BigInteger
 import java.security.KeyFactory
@@ -36,12 +40,13 @@ class Certificate {
         return sslContext
     }
 
-    fun GetClient() : OkHttpClient{
+    fun GetClient(token: String) : OkHttpClient{
         val sslContext = initSSL()
         // Create an OkHttpClient that trusts all certificates
         val okHttpClient = OkHttpClient.Builder()
             .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
             .hostnameVerifier { _, _ -> true }
+            .addInterceptor(JwtInterceptor(token))
             .build()
 
         return okHttpClient

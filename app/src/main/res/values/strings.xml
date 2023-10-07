@@ -4,10 +4,7 @@
     <string name="tab_text_timeline">Timeline</string>
     <string name="tab_text_calendar">Calendar</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_timeline_fragment">Hello timeline fragment</string>
-    <string name="hello_calendar_fragment">Hello calendar fragment</string>
-    <string name="hello_statistics_fragment">Hello statistics fragment</string>
-    <string name="default_web_client_id">355079363334-h7ueeqcaqtiak2i33p07nrhibujuoqvq.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">817166273814-css9qgkp0sgn8bpci0s24i7j9sonl7v2.apps.googleusercontent.com</string>
     <string name="title_activity_filter">FilterActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -17,4 +14,6 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_bluetooth_connections">BluetoothConnectionsActivity</string>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
 </resources>

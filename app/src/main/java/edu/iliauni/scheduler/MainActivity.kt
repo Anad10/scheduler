@@ -3,38 +3,20 @@ package edu.iliauni.scheduler
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-import edu.iliauni.scheduler.API.ApiService
 import edu.iliauni.scheduler.Manager.LayoutManager
 import edu.iliauni.scheduler.Manager.RealmManager
 import edu.iliauni.scheduler.databinding.ActivityMainBinding
-import edu.iliauni.scheduler.objects.Attendee
-import edu.iliauni.scheduler.objects.Event
-import edu.iliauni.scheduler.objects.Host
-import edu.iliauni.scheduler.objects.UserDetail
+import edu.iliauni.scheduler.objects.*
 import edu.iliauni.scheduler.ui.main.SectionsPagerAdapter
 import edu.iliauni.scheduler.ui.main.fragments.CalendarFragment
 import edu.iliauni.scheduler.ui.main.fragments.StatisticsFragment
 import edu.iliauni.scheduler.ui.main.fragments.TimelineFragment
-import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
-import org.json.JSONArray
-import retrofit2.Retrofit
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,19 +25,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationsButton: ImageView
     private lateinit var filterButton: ImageView
 
-    companion object{
-        private const val BASE_URL = ""
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         RealmManager.realm.writeBlocking {
             // get UserDetails from Realm
-            val userDetail = this.query<UserDetail>().find()
+            val userDetail = this.query<UserDetail>().first()
+            val url = userDetail.find()?.programUrl
 
-            if(userDetail.isEmpty()){
+            if (url == null) {
                 val intent = Intent(this@MainActivity, ChooseProgramActivity::class.java)
                 startActivity(intent)
+            }
+            else {
+                AppData.programURL = url
+                AppData.idToken = userDetail.find()?.idToken.toString()
+                val acct = GoogleSignIn.getLastSignedInAccount(this@MainActivity)
+                if (acct == null) {
+                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                } else if(AppData.idToken == null) {
+                    AppData.idToken = acct.idToken.toString()
+                }
             }
         }
 

@@ -11,6 +11,9 @@ interface ApiService {
     @GET("Subject/GetSubjects/{id}")
     suspend fun getEvents(@Path("id") id: Int): ResponseBody
 
+    @GET("User/GetBluetoothCodes")
+    suspend fun getBluetoothCodes(): ResponseBody
+
     @GET("Program/Url/{code}")
     suspend fun getProgramUrl(@Path("code") code: String): ResponseBody
 

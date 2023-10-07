@@ -8,4 +8,5 @@ open class UserDetail : RealmObject {
     var userId: Int = 0
     var programCode: String = ""
     var programUrl: String = ""
+    var idToken: String = ""
 }

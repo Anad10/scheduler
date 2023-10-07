@@ -9,7 +9,7 @@ import io.realm.kotlin.RealmConfiguration
 
 object RealmManager {
     val config = RealmConfiguration.Builder(schema = setOf(Attendee::class, Event::class, Host::class, UserDetail::class))
-        .schemaVersion(7)
+        .schemaVersion(8)
         .build()
 
     val realm: Realm by lazy {

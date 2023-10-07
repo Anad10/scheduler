@@ -16,10 +16,7 @@ import com.google.android.gms.tasks.Task
 import edu.iliauni.scheduler.API.ApiService
 import edu.iliauni.scheduler.API.Certificate
 import edu.iliauni.scheduler.Manager.RealmManager
-import edu.iliauni.scheduler.objects.Attendee
-import edu.iliauni.scheduler.objects.Event
-import edu.iliauni.scheduler.objects.Host
-import edu.iliauni.scheduler.objects.UserDetail
+import edu.iliauni.scheduler.objects.*
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -68,13 +65,11 @@ class LoginActivity : AppCompatActivity() {
 
             // Signed in successfully, get user details
             //val displayName = account?.displayName
-            val email = account?.email
+            //val email = account?.email
             val idToken = account?.idToken
 
             // Use the user details as needed
             println("Signed in successfully!")
-            //println("Display Name: $displayName")
-            println("Email: $email")
             println("ID Token: $idToken")
 
             // Proceed with sending the ID token to your backend
@@ -82,9 +77,11 @@ class LoginActivity : AppCompatActivity() {
             RealmManager.realm.writeBlocking {
                 // get UserDetails from Realm
                 val userDetail = this.query<UserDetail>().first()
-                userDetail.find()?.userName = email.toString()
+                //userDetail.find()?.userName = email.toString()
                 userDetail.find()?.userId = userId
+                userDetail.find()?.idToken = idToken!!
             }
+            AppData.idToken = idToken;
             GlobalScope.launch(Dispatchers.IO) {
                 try{
                     val responseString = getEvents(userId).string()
@@ -93,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 catch (exception: Exception){
-                    Log.e("exception",exception.toString())
+                    Log.e("exception", exception.toString())
                 }
             }
         } catch (e: ApiException) {
@@ -149,16 +146,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     suspend fun getEvents(userId: Int): ResponseBody {
-        var url = "https://134.122.90.22:7237/"
-        RealmManager.realm.writeBlocking {
-            // get UserDetails from Realm
-            val userDetail = this.query<UserDetail>().first()
-            Log.d("userDetail", userDetail.find()?.userId.toString() + " " + userDetail.find()?.programUrl.toString())
-            //var url = userDetail.find()?.programUrl.toString()
+        var url = AppData.programURL
+        if(url == null){
+            RealmManager.realm.writeBlocking {
+                val userDetail = this.query<UserDetail>().first()
+                url = userDetail.find()?.programUrl.toString()
+            }
         }
         val retrofit = Retrofit.Builder()
-            .baseUrl(url)
-            .client(Certificate().GetClient())
+            .baseUrl(AppData.programURL)
+            .client(Certificate().GetClient(AppData.idToken!!))
             .build()
 
         val apiService = retrofit.create(ApiService::class.java)

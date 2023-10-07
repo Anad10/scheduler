@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import edu.iliauni.scheduler.Adapters.EventsListAdapter
 import edu.iliauni.scheduler.Adapters.TimelineAdapter
+import edu.iliauni.scheduler.BluetoothActivity
 import edu.iliauni.scheduler.GoogleForm
 import edu.iliauni.scheduler.Manager.RealmManager
 import edu.iliauni.scheduler.R
@@ -52,6 +53,12 @@ class TimelineFragment() : Fragment() {
         val googleFormsButton = view.findViewById<Button>(R.id.btn_google_forms)
         googleFormsButton.setOnClickListener{
             val intent = Intent(context, GoogleForm::class.java)
+            startActivity(intent)
+        }
+
+        val bluetoothButton = view.findViewById<Button>(R.id.btn_activate_bluetooth)
+        bluetoothButton.setOnClickListener{
+            val intent = Intent(context, BluetoothActivity::class.java)
             startActivity(intent)
         }
     }
