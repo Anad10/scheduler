@@ -46,6 +46,6 @@
             layout="@layout/notifications_layout"></include>
 
         <include
-            layout="@layout/filter_layout"></include>
+            layout="@layout/settings_layout"></include>
     </RelativeLayout>
 </FrameLayout>

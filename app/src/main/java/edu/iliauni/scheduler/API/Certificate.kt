@@ -20,6 +20,8 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 class Certificate {
+    private val TAG = "Certificate"
+
     private val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
         }
@@ -47,6 +49,7 @@ class Certificate {
             .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
             .hostnameVerifier { _, _ -> true }
             .addInterceptor(JwtInterceptor(token))
+            .addInterceptor(RequestLoggingInterceptor())
             .build()
 
         return okHttpClient

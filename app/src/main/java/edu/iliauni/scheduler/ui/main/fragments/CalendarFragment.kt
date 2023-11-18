@@ -53,12 +53,6 @@ class CalendarFragment : Fragment() {
         RealmManager.realm.writeBlocking {
             val hosts = this.query<Host>().find()
             val attendeesList = this.query<Attendee>().find()
-
-        }
-
-        val saveFilterButton = view.findViewById<Button>(R.id.btn_filter_save)
-        saveFilterButton.setOnClickListener{
-
         }
     }
 

@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.RelativeLayout
 import edu.iliauni.scheduler.R
+import edu.iliauni.scheduler.ui.main.OnSwipeTouchListener
 
 class LayoutManager(private var mContext: Context, private var view: View): Application() {
     private lateinit var list: ListView
@@ -16,7 +17,7 @@ class LayoutManager(private var mContext: Context, private var view: View): Appl
     companion object {
         var eventDetailsVisibleLevel: Int = 0
         var visibleNotifications: Boolean = false
-        var visibleFilter: Boolean = false
+        var visibleSetting: Boolean = false
     }
 
     fun toggleNotifications(){
@@ -24,9 +25,9 @@ class LayoutManager(private var mContext: Context, private var view: View): Appl
             hideEventDetails()
             eventDetailsVisibleLevel = 0
         }
-        if(visibleFilter){
-            closeFilter()
-            visibleFilter = !visibleFilter
+        if(visibleSetting){
+            closeSettings()
+            visibleSetting = !visibleSetting
         }
         if(!visibleNotifications){
             openNotification()
@@ -37,7 +38,7 @@ class LayoutManager(private var mContext: Context, private var view: View): Appl
         visibleNotifications = !visibleNotifications
     }
 
-    fun toggleFilter(){
+    fun toggleSettings(){
         if(eventDetailsVisibleLevel > 0){
             hideEventDetails()
             eventDetailsVisibleLevel = 0
@@ -46,10 +47,10 @@ class LayoutManager(private var mContext: Context, private var view: View): Appl
             closeNotification()
             visibleNotifications = !visibleNotifications
         }
-        if(!visibleFilter)
-            openFilter()
-        else closeFilter()
-        visibleFilter = !visibleFilter
+        if(!visibleSetting)
+            openSettings()
+        else closeSettings()
+        visibleSetting = !visibleSetting
     }
 
     private fun openNotification(){
@@ -62,6 +63,13 @@ class LayoutManager(private var mContext: Context, private var view: View): Appl
         val animation = AnimationUtils.loadAnimation(mContext, anim)
         notificationsLayout.startAnimation(animation)
         notificationsLayout.layoutParams = params
+
+        notificationsLayout.setOnTouchListener(object : OnSwipeTouchListener(mContext),
+            View.OnTouchListener {
+            override fun onSwipeDown() {
+                toggleNotifications()
+            }
+        })
     }
 
     private fun closeNotification(){
@@ -76,28 +84,35 @@ class LayoutManager(private var mContext: Context, private var view: View): Appl
         notificationsLayout.layoutParams = params
     }
 
-    private fun openFilter(){
-        val filterLayout = view.findViewById(R.id.filter_layout) as RelativeLayout
+    private fun openSettings(){
+        val settingsLayout = view.findViewById(R.id.settings_layout) as RelativeLayout
         val anim = R.anim.slide_up
         val params = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
             1600
         )
         val animation = AnimationUtils.loadAnimation(mContext, anim)
-        filterLayout.startAnimation(animation)
-        filterLayout.layoutParams = params
+        settingsLayout.startAnimation(animation)
+        settingsLayout.layoutParams = params
+
+        settingsLayout.setOnTouchListener(object : OnSwipeTouchListener(mContext),
+            View.OnTouchListener {
+            override fun onSwipeDown() {
+                toggleSettings()
+            }
+        })
     }
 
-    private fun closeFilter(){
-        val filterLayout = view.findViewById(R.id.filter_layout) as RelativeLayout
+    private fun closeSettings(){
+        val settingsLayout = view.findViewById(R.id.settings_layout) as RelativeLayout
         val anim = R.anim.slide_down
         val params = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
             0
         )
         val animation = AnimationUtils.loadAnimation(mContext, anim)
-        filterLayout.startAnimation(animation)
-        filterLayout.layoutParams = params
+        settingsLayout.startAnimation(animation)
+        settingsLayout.layoutParams = params
     }
 
     fun openEventDetails(){

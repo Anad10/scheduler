@@ -17,6 +17,7 @@ import edu.iliauni.scheduler.BluetoothActivity
 import edu.iliauni.scheduler.GoogleForm
 import edu.iliauni.scheduler.Manager.RealmManager
 import edu.iliauni.scheduler.R
+import edu.iliauni.scheduler.Utils.GoogleAuthUtility
 import edu.iliauni.scheduler.objects.Event
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.query.RealmResults
@@ -60,6 +61,14 @@ class TimelineFragment() : Fragment() {
         bluetoothButton.setOnClickListener{
             val intent = Intent(context, BluetoothActivity::class.java)
             startActivity(intent)
+        }
+
+        val logoutButton = view.findViewById<Button>(R.id.btn_logout)
+        logoutButton.setOnClickListener{
+            val googleAuth = GoogleAuthUtility.initialize(requireContext())
+            if (googleAuth != null) {
+                GoogleAuthUtility.singOut(requireContext(), googleAuth)
+            }
         }
     }
 

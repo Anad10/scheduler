@@ -1,12 +1,10 @@
 package edu.iliauni.scheduler
 
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -16,6 +14,9 @@ import com.google.android.gms.tasks.Task
 import edu.iliauni.scheduler.API.ApiService
 import edu.iliauni.scheduler.API.Certificate
 import edu.iliauni.scheduler.Manager.RealmManager
+import edu.iliauni.scheduler.Utils.AlertDialogHelper
+import edu.iliauni.scheduler.Utils.GoogleAuthUtility
+import edu.iliauni.scheduler.config.Constants
 import edu.iliauni.scheduler.objects.*
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.Dispatchers
@@ -26,34 +27,24 @@ import org.json.JSONArray
 import retrofit2.Retrofit
 
 class LoginActivity : AppCompatActivity() {
-    companion object{
-        private const val RC_SIGN_IN = 562
-    }
-    private lateinit var googleSignInClient: GoogleSignInClient
-
+    private var TAG = "LoginActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Create a GoogleSignInOptions object with the default sign-in scopes
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        // Create a GoogleSignInClient object with the options specified by gso
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        val googleSignInClient = GoogleAuthUtility.initialize(this)
 
         val signInButton = findViewById<Button>(R.id.btn_signin)
         signInButton.setOnClickListener {
-            val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            if (googleSignInClient != null) {
+                GoogleAuthUtility.signIn(this, googleSignInClient!!)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constants.RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
         }
@@ -69,8 +60,8 @@ class LoginActivity : AppCompatActivity() {
             val idToken = account?.idToken
 
             // Use the user details as needed
-            println("Signed in successfully!")
-            println("ID Token: $idToken")
+            Log.d(TAG, "Signed in successfully!")
+            Log.d(TAG, "ID Token: $idToken")
 
             // Proceed with sending the ID token to your backend
             val userId = getUserID(idToken)
@@ -86,11 +77,14 @@ class LoginActivity : AppCompatActivity() {
                 try{
                     val responseString = getEvents(userId).string()
                     createDB(responseString)
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
                 }
                 catch (exception: Exception){
-                    Log.e("exception", exception.toString())
+                    Log.e(TAG, exception.toString())
+                    AlertDialogHelper.showAlert(this@LoginActivity, "Error", exception.message.toString())
+                }
+                finally {
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
                 }
             }
         } catch (e: ApiException) {

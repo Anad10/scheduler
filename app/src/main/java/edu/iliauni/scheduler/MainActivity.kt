@@ -2,7 +2,6 @@ package edu.iliauni.scheduler
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -14,7 +13,7 @@ import edu.iliauni.scheduler.databinding.ActivityMainBinding
 import edu.iliauni.scheduler.objects.*
 import edu.iliauni.scheduler.ui.main.SectionsPagerAdapter
 import edu.iliauni.scheduler.ui.main.fragments.CalendarFragment
-import edu.iliauni.scheduler.ui.main.fragments.StatisticsFragment
+import edu.iliauni.scheduler.ui.main.fragments.WeeklyFragment
 import edu.iliauni.scheduler.ui.main.fragments.TimelineFragment
 import io.realm.kotlin.ext.query
 
@@ -23,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var notificationsButton: ImageView
-    private lateinit var filterButton: ImageView
+    private lateinit var settingsButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,21 +64,21 @@ class MainActivity : AppCompatActivity() {
             val currentIndex = viewPager.currentItem
 
             when (currentIndex) {
-                0 -> LayoutManager(this, StatisticsFragment.binding!!).toggleNotifications()
+                0 -> LayoutManager(this, WeeklyFragment.binding!!).toggleNotifications()
                 1 -> LayoutManager(this, TimelineFragment.binding!!).toggleNotifications()
                 2 -> LayoutManager(this, CalendarFragment.binding!!).toggleNotifications()
             }
 
         }
 
-        filterButton = findViewById(R.id.filter_btn) as ImageView
-        filterButton.setOnClickListener {
+        settingsButton = findViewById(R.id.settings_btn) as ImageView
+        settingsButton.setOnClickListener {
             val currentIndex = viewPager.currentItem
 
             when (currentIndex) {
-                0 -> LayoutManager(this, StatisticsFragment.binding!!).toggleFilter()
-                1 -> LayoutManager(this, TimelineFragment.binding!!).toggleFilter()
-                2 -> LayoutManager(this, CalendarFragment.binding!!).toggleFilter()
+                0 -> LayoutManager(this, WeeklyFragment.binding!!).toggleSettings()
+                1 -> LayoutManager(this, TimelineFragment.binding!!).toggleSettings()
+                2 -> LayoutManager(this, CalendarFragment.binding!!).toggleSettings()
             }
 
         }
